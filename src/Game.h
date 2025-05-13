@@ -19,23 +19,19 @@ private:
     // Game Objects
     std::vector<GameObject *> objects;
 
-    // Private functions
+public:
+    // Constructor
+    Game();
+    // Deconstructor
+    ~Game();
+
+    void run();
+    float getRenderDeltaTime() const;
+    float getUpdateDeltaTime() const;
+
+private:
     void initWindow();
     void update();
     void render();
     void gameLoop();
-
-public:
-    // Public functions
-    float getRenderDeltaTime() const;
-    float getUpdateDeltaTime() const;
-
-    // Constructor
-    Game();
-
-    // Deconstructor
-    ~Game();
-
-    // Public run function
-    void run();
 };
