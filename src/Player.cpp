@@ -10,18 +10,18 @@ Player::~Player() {
 }
 
 void Player::update(float deltaTime) {
-    sf::Vector2f movement(0.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) movement.y -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) movement.y += 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) movement.x -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) movement.x += 1;
+    movementDirection = sf::Vector2f(0.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) movementDirection.y -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) movementDirection.y += 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) movementDirection.x -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) movementDirection.x += 1;
 
     // Account for user pressing multiple axis buttons
-    if (movement.x != 0  && movement.y != 0)
-        movement = movement.normalized();
+    if (movementDirection.x != 0  && movementDirection.y != 0)
+        movementDirection = movementDirection.normalized();
 
     // Update player position
-    circle.move(movement * deltaTime * movementMultiplier);
+    circle.move(movementDirection * deltaTime * movementMultiplier);
 }
 
 void Player::render(sf::RenderWindow& window, float deltaTime) {

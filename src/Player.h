@@ -7,6 +7,7 @@ class Player : public GameObject {
 private:
     sf::CircleShape circle;
     float movementMultiplier = 300;
+    sf::Vector2f movementDirection;
 public:
     Player();
     virtual ~Player();
