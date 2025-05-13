@@ -16,6 +16,10 @@ void Player::update(float deltaTime) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) movement.x -= 1;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) movement.x += 1;
 
+    // Account for user pressing multiple axis buttons
+    if (movement.x != 0  && movement.y != 0)
+        movement = movement.normalized();
+
     // Update player position
     circle.move(movement * deltaTime * movementMultiplier);
 }
