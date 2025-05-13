@@ -1,5 +1,20 @@
 #include "Game.h"
 
+Game::Game() {
+    initWindow();
+    Player* player = new Player();
+    objects.push_back(player);
+}
+
+Game::~Game() {
+    // Clean up all GameObject pointers
+    for (GameObject* object : objects) {
+        delete object;
+        object = nullptr;
+    }
+    objects.clear();
+}
+
 void Game::initWindow() {
     sf::ContextSettings settings;
     settings.antiAliasingLevel = 8;
@@ -10,15 +25,8 @@ void Game::initWindow() {
 void Game::update() {
     updateDeltaTime = updateClock.restart().asSeconds();
 
-    // Input
-    sf::Vector2f movement(0.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) movement.y -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) movement.y += 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) movement.x -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) movement.x += 1;
-
-    // Updates
-    object.move(movement * updateDeltaTime * movementMultiplier);
+    for (GameObject* object : objects)
+        object->update(updateDeltaTime);
 }
 
 void Game::render() {
@@ -26,7 +34,9 @@ void Game::render() {
 
     // The window is like a canvas
     window.clear();
-    window.draw(object);
+    
+    for (GameObject* object : objects)
+        object->render(window, renderDeltaTime);
 
     // Display backbuffer
     window.display();
@@ -51,14 +61,6 @@ float Game::getRenderDeltaTime() const {
 
 float Game::getUpdateDeltaTime() const {
     return updateDeltaTime;
-}
-
-Game::Game() {
-    initWindow();
-
-    // Load scene
-    object = sf::CircleShape(50.0f);
-    object.setFillColor(sf::Color::Green);
 }
 
 void Game::run() {
