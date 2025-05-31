@@ -10,7 +10,7 @@ Player::~Player() {
 }
 
 void Player::fixedUpdate(float deltaTime) {
-    previousPosition = currentPosition;
+    GameObject::fixedUpdate(deltaTime);
 
     velocity = sf::Vector2f(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) velocity.y -= 1;
@@ -23,15 +23,16 @@ void Player::fixedUpdate(float deltaTime) {
         velocity = velocity.normalized();
 
     velocity = movementMultiplier * velocity;
-    currentPosition += velocity * deltaTime;
+    transform->position += velocity * deltaTime;
 }
 
 void Player::preRender(float alpha)
 {
-    interpolatedPosition = previousPosition + (currentPosition - previousPosition) * alpha;
-    circle.setPosition(interpolatedPosition);
+    GameObject::preRender(alpha);
+    circle.setPosition(transform->getInterpolatedPosition());
 }
 
 void Player::render(sf::RenderWindow& window) {
+    GameObject::render(window);
     window.draw(circle);
 }
