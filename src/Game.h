@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <optional>
+#include "GameObject.h"
+#include "Player.h"
 
 class Game {
 private:
@@ -14,24 +16,22 @@ private:
     // Window for game
     sf::RenderWindow window;
 
-    // Temporary first object
-    sf::CircleShape object;
-    float movementMultiplier = 300;
+    // Game Objects
+    std::vector<GameObject *> objects;
 
-    // Private functions
+public:
+    // Constructor
+    Game();
+    // Deconstructor
+    ~Game();
+
+    void run();
+    float getRenderDeltaTime() const;
+    float getUpdateDeltaTime() const;
+
+private:
     void initWindow();
     void update();
     void render();
     void gameLoop();
-
-public:
-    // Public functions
-    float getRenderDeltaTime() const;
-    float getUpdateDeltaTime() const;
-
-    // Constructor
-    Game();
-
-    // Public run function
-    void run();
 };
