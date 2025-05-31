@@ -19,48 +19,62 @@ void Game::initWindow() {
     sf::ContextSettings settings;
     settings.antiAliasingLevel = 8;
     window = sf::RenderWindow(sf::VideoMode({ 800, 600 }), "Game Instance", sf::State::Windowed, settings);
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(144);
 }
 
-void Game::update() {
-    updateDeltaTime = updateClock.restart().asSeconds();
+void Game::handleEvents() {
+    while (windowEvent = window.pollEvent()) {
+        if (windowEvent->is<sf::Event::Closed>())
+            window.close();
+    }
+}
 
+void Game::fixedUpdate(float deltaTime) {
     for (GameObject* object : objects)
-        object->update(updateDeltaTime);
+        object->fixedUpdate(deltaTime);
 }
+
+void Game::preRender(float alpha) {
+    for (GameObject* object : objects)
+        object->preRender(alpha);
+}
+
 
 void Game::render() {
-    renderDeltaTime = renderClock.restart().asSeconds();
-
     // The window is like a canvas
     window.clear();
     
     for (GameObject* object : objects)
-        object->render(window, renderDeltaTime);
+        object->render(window);
 
     // Display backbuffer
     window.display();
 }
 
 void Game::gameLoop() {
-    std::optional<sf::Event> event;
+    float accumulator = 0.0f;
+    const float dt = 1.0f / 60.0f;
+
+    sf::Clock clock;
+    float frameTime;
+    float alpha;
 
     while (window.isOpen()) {
-        while (event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>()) window.close();
+        frameTime = clock.restart().asSeconds();
+        accumulator += frameTime;
+
+        handleEvents();
+
+        while (accumulator >= dt) {
+            fixedUpdate(dt);
+            accumulator -= dt;
         }
 
-        update();
+        alpha = accumulator / dt;
+
+        preRender(alpha);
         render();
     }
-}
-
-float Game::getRenderDeltaTime() const {
-    return renderDeltaTime;
-}
-
-float Game::getUpdateDeltaTime() const {
-    return updateDeltaTime;
 }
 
 void Game::run() {

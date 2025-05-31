@@ -7,14 +7,9 @@
 
 class Game {
 private:
-    // Delta Time handling
-    sf::Clock updateClock;
-    sf::Clock renderClock;
-    float renderDeltaTime = 0;
-    float updateDeltaTime = 0;
-
     // Window for game
     sf::RenderWindow window;
+    std::optional<sf::Event> windowEvent;
 
     // Game Objects
     std::vector<GameObject *> objects;
@@ -26,12 +21,12 @@ public:
     ~Game();
 
     void run();
-    float getRenderDeltaTime() const;
-    float getUpdateDeltaTime() const;
 
 private:
     void initWindow();
-    void update();
+    void handleEvents();
+    void fixedUpdate(float deltaTime);
+    void preRender(float alpha);
     void render();
     void gameLoop();
 };

@@ -7,6 +7,7 @@ private:
     
 public:
     virtual ~GameObject();
-    virtual void update(float deltaTime);
-    virtual void render(sf::RenderWindow& window, float deltaTime);
+    virtual void fixedUpdate(float deltaTime);
+    virtual void preRender(float alpha);
+    virtual void render(sf::RenderWindow& window);
 };
