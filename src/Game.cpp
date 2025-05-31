@@ -1,5 +1,8 @@
 #include "Game.h"
 
+#include <iostream>
+#include <atomic>
+
 Game::Game() {
     initWindow();
     Player* player = new Player();
@@ -8,10 +11,8 @@ Game::Game() {
 
 Game::~Game() {
     // Clean up all GameObject pointers
-    for (GameObject* object : objects) {
+    for (GameObject* object : objects)
         delete object;
-        object = nullptr;
-    }
     objects.clear();
 }
 

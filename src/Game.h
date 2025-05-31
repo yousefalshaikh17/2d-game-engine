@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 #include "GameObject.h"
-#include "Player.h"
+#include "GameObjects/Player.h"
 
 class Game {
 private:
