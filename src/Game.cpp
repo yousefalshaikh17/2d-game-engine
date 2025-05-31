@@ -22,6 +22,13 @@ void Game::initWindow() {
     window.setFramerateLimit(144);
 }
 
+void Game::handleEvents() {
+    while (windowEvent = window.pollEvent()) {
+        if (windowEvent->is<sf::Event::Closed>())
+            window.close();
+    }
+}
+
 void Game::fixedUpdate(float deltaTime) {
     for (GameObject* object : objects)
         object->fixedUpdate(deltaTime);
@@ -45,7 +52,6 @@ void Game::render() {
 }
 
 void Game::gameLoop() {
-    std::optional<sf::Event> event;
     float accumulator = 0.0f;
     const float dt = 1.0f / 60.0f;
 
@@ -57,10 +63,7 @@ void Game::gameLoop() {
         frameTime = clock.restart().asSeconds();
         accumulator += frameTime;
 
-        while (event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>())
-                window.close();
-        }
+        handleEvents();
 
         while (accumulator >= dt) {
             fixedUpdate(dt);

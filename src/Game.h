@@ -9,6 +9,7 @@ class Game {
 private:
     // Window for game
     sf::RenderWindow window;
+    std::optional<sf::Event> windowEvent;
 
     // Game Objects
     std::vector<GameObject *> objects;
@@ -23,6 +24,7 @@ public:
 
 private:
     void initWindow();
+    void handleEvents();
     void fixedUpdate(float deltaTime);
     void preRender(float alpha);
     void render();
