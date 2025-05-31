@@ -4,10 +4,14 @@ GameObject::~GameObject() {
 
 }
 
-void GameObject::update(float deltaTime) {
+void GameObject::fixedUpdate(float deltaTime)
+{
+}
+
+void GameObject::preRender(float alpha) {
     
 }
 
-void GameObject::render(sf::RenderWindow& window, float deltaTime) {
+void GameObject::render(sf::RenderWindow& window) {
     
 }

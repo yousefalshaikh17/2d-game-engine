@@ -7,10 +7,14 @@ class Player : public GameObject {
 private:
     sf::CircleShape circle;
     float movementMultiplier = 300;
-    sf::Vector2f movementDirection;
+    sf::Vector2f velocity;
+    sf::Vector2f previousPosition;
+    sf::Vector2f currentPosition;
+    sf::Vector2f interpolatedPosition;
 public:
     Player();
     virtual ~Player();
-    void update(float deltaTime);
-    void render(sf::RenderWindow& window, float deltaTime);
+    void fixedUpdate(float deltaTime);
+    void preRender(float alpha);
+    void render(sf::RenderWindow& window);
 };

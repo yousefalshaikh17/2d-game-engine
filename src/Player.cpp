@@ -9,21 +9,29 @@ Player::~Player() {
     
 }
 
-void Player::update(float deltaTime) {
-    movementDirection = sf::Vector2f(0.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) movementDirection.y -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) movementDirection.y += 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) movementDirection.x -= 1;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) movementDirection.x += 1;
+void Player::fixedUpdate(float deltaTime) {
+    previousPosition = currentPosition;
+
+    velocity = sf::Vector2f(0.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) velocity.y -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) velocity.y += 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) velocity.x -= 1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) velocity.x += 1;
 
     // Account for user pressing multiple axis buttons
-    if (movementDirection.x != 0  && movementDirection.y != 0)
-        movementDirection = movementDirection.normalized();
+    if (velocity.x != 0  && velocity.y != 0)
+        velocity = velocity.normalized();
 
-    // Update player position
-    circle.move(movementDirection * deltaTime * movementMultiplier);
+    velocity = movementMultiplier * velocity;
+    currentPosition += velocity * deltaTime;
 }
 
-void Player::render(sf::RenderWindow& window, float deltaTime) {
+void Player::preRender(float alpha)
+{
+    interpolatedPosition = previousPosition + (currentPosition - previousPosition) * alpha;
+    circle.setPosition(interpolatedPosition);
+}
+
+void Player::render(sf::RenderWindow& window) {
     window.draw(circle);
 }
