@@ -12,6 +12,6 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(main src/main.cpp src/Game.cpp src/GameObject.cpp src/GameObjects/Player.cpp  src/Component.h src/Components/TransformComponent.h src/Components/TransformComponent.cpp)
+add_executable(main "src/main.cpp" "src/Game.cpp" "src/GameObject.cpp" "src/GameObjects/Player.cpp" "src/BaseComponent.h" "src/Components/TransformComponent.h" "src/Components/TransformComponent.cpp" "src/Components/RenderComponent.h" "src/Components/RenderComponent.cpp" "src/DrawableEntity.h" "src/DrawableEntity.cpp")
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
