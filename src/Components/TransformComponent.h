@@ -1,5 +1,5 @@
 #pragma once
-#include "../Component.h"
+#include "../BaseComponent.h"
 #include <SFML/Graphics.hpp>
 
 class TransformComponent : public BaseComponent {
