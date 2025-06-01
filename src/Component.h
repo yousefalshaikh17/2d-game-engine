@@ -4,6 +4,8 @@ class GameObject;
 
 class BaseComponent {
 public:
+    GameObject* getOwner() { return owner; }
+
     BaseComponent(GameObject* owner) { setOwner(owner); };
     virtual ~BaseComponent() = default;
     virtual void update(float) {}
