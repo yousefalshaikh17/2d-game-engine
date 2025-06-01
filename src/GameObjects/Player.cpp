@@ -1,8 +1,11 @@
 #include "Player.h"
 
 Player::Player() {
-    circle = sf::CircleShape(50.0f);
-    circle.setFillColor(sf::Color::Green);
+    sf::CircleShape* circle = new sf::CircleShape(50.0f);
+    circle->setFillColor(sf::Color::Green);
+
+    RenderComponent* render = addComponent<RenderComponent>();
+    render->drawableEntity = new DrawableEntity(circle);
 }
 
 Player::~Player() {
@@ -24,15 +27,4 @@ void Player::fixedUpdate(float deltaTime) {
 
     velocity = movementMultiplier * velocity;
     transform->position += velocity * deltaTime;
-}
-
-void Player::preRender(float alpha)
-{
-    GameObject::preRender(alpha);
-    circle.setPosition(transform->getInterpolatedPosition());
-}
-
-void Player::render(sf::RenderWindow& window) {
-    GameObject::render(window);
-    window.draw(circle);
 }
