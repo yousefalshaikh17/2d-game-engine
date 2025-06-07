@@ -1,21 +1,26 @@
 #pragma once
 
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Components/TransformComponent.h"
-#include <iostream>
-
+#include "GameContext.h"
 
 class GameObject {
 protected:
     std::vector<BaseComponent*> components;
+    GameContext& context;
 public:
     TransformComponent* transform;
 
-    GameObject();
+    GameObject(GameContext& context);
     virtual ~GameObject();
     virtual void fixedUpdate(float deltaTime);
     virtual void preRender(float alpha);
     virtual void render(sf::RenderWindow& window);
+
+    virtual void onCollide(BoxColliderComponent& other);
+
+    GameContext& getContext();
 
     // Component handling
     template<typename T>

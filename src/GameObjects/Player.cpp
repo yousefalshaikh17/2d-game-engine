@@ -1,11 +1,16 @@
 #include "Player.h"
 
-Player::Player() {
-    sf::CircleShape* circle = new sf::CircleShape(50.0f);
+Player::Player(GameContext& context): GameObject(context)
+{
+    sf::CircleShape* circle = new sf::CircleShape(0.5);
     circle->setFillColor(sf::Color::Green);
+
+    transform->scale = sf::Vector2(100.0f, 100.0f);
 
     RenderComponent* render = addComponent<RenderComponent>();
     render->drawableEntity = new DrawableEntity(circle);
+
+    BoxColliderComponent* collider = addComponent<BoxColliderComponent>();
 }
 
 Player::~Player() {
@@ -27,4 +32,9 @@ void Player::fixedUpdate(float deltaTime) {
 
     velocity = movementMultiplier * velocity;
     transform->position += velocity * deltaTime;
+}
+
+void Player::onCollide(BoxColliderComponent& other)
+{
+    std::cout << "Collided" << std::endl;
 }

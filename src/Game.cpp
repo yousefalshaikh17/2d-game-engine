@@ -5,8 +5,11 @@
 
 Game::Game() {
     initWindow();
-    Player* player = new Player();
+    Player* player = new Player(context);
     objects.push_back(player);
+
+    Obstacle* obstacle = new Obstacle(context);
+    objects.push_back(obstacle);
 }
 
 Game::~Game() {
@@ -33,6 +36,8 @@ void Game::handleEvents() {
 void Game::fixedUpdate(float deltaTime) {
     for (GameObject* object : objects)
         object->fixedUpdate(deltaTime);
+
+    context.getCollisionSystem().update();
 }
 
 void Game::preRender(float alpha) {

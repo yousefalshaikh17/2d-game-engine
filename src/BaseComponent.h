@@ -7,12 +7,14 @@ class BaseComponent {
 public:
     GameObject* getOwner() { return owner; }
 
-    BaseComponent(GameObject* owner) { setOwner(owner); };
+    BaseComponent(GameObject* owner) { setOwner(owner); }
     virtual ~BaseComponent() = default;
     virtual void update(float) {}
     virtual void fixedUpdate(float) {}
     virtual void interpolate(float) {}
     virtual void render(sf::RenderWindow&) {}
+
+    GameObject* getGameObject() { return owner; }
 
 protected:
     GameObject* owner;
