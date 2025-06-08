@@ -1,6 +1,8 @@
 #include "CollisionSystem.h"
 #include "Components/BoxColliderComponent.h"
 
+bool CollisionSystem::visualizeColliders = false;
+
 void CollisionSystem::registerCollider(BoxColliderComponent* collider) {
     colliders.push_back(collider);
 }
