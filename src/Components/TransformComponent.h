@@ -33,4 +33,7 @@ public:
     sf::Vector2f getInterpolatedPosition() const;
     float getInterpolatedRotation() const;
     sf::Vector2f getInterpolatedScale() const;
+    
+    // Transform state during the current frame
+    bool hasMoved() const;
 };

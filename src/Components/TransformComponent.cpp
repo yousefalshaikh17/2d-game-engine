@@ -75,3 +75,8 @@ sf::Vector2f TransformComponent::getInterpolatedScale() const
 {
     return interpolatedScale;
 }
+
+bool TransformComponent::hasMoved() const
+{
+    return position != previousPosition;
+}

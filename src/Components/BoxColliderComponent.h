@@ -11,6 +11,9 @@ class BoxColliderComponent : public BaseComponent {
 private:
     sf::RectangleShape shape;
 public:
+    bool isTrigger = false;
+
+
     BoxColliderComponent(GameObject* owner);
     virtual ~BoxColliderComponent();
 
