@@ -24,6 +24,9 @@ sf::FloatRect BoxColliderComponent::getBounds()
 
 void BoxColliderComponent::render(sf::RenderWindow& window)
 {
-	getBounds();
-	window.draw(shape);
+	if (owner->getContext().getCollisionSystem().visualizeColliders)
+	{
+		getBounds();
+		window.draw(shape);
+	}
 }

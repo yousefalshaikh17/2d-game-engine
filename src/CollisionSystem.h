@@ -5,6 +5,8 @@ class BoxColliderComponent;
 
 class CollisionSystem {
 public:
+    static bool visualizeColliders;
+
     void registerCollider(BoxColliderComponent* collider);
     void unregisterCollider(BoxColliderComponent* collider);
     void update();
