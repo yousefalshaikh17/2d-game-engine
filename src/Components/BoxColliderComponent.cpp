@@ -19,6 +19,8 @@ sf::FloatRect BoxColliderComponent::getBounds()
 {
 	TransformComponent* transform = owner->transform;
 	shape.setPosition(transform->position);
+	shape.setRotation(sf::degrees(transform->getInterpolatedRotation()));
+	shape.setSize(transform->scale);
 	return shape.getGlobalBounds();
 }
 
