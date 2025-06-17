@@ -1,6 +1,7 @@
 #include "GameObject.h"
 
-GameObject::GameObject()
+GameObject::GameObject(GameContext& context)
+    : context(context)
 {
     transform = addComponent<TransformComponent>();
 }
@@ -25,4 +26,14 @@ void GameObject::preRender(float alpha) {
 void GameObject::render(sf::RenderWindow& window) {
     for (BaseComponent* component : components)
         component->render(window);
+}
+
+void GameObject::onCollide(BoxColliderComponent& other)
+{
+
+}
+
+GameContext& GameObject::getContext()
+{
+    return context;
 }

@@ -4,6 +4,9 @@
 #include <optional>
 #include "GameObject.h"
 #include "GameObjects/Player.h"
+#include "GameObjects/Obstacle.h"
+#include "CollisionSystem.h"
+#include "GameContext.h"
 
 class Game {
 private:
@@ -13,6 +16,9 @@ private:
 
     // Game Objects
     std::vector<GameObject *> objects;
+
+    // Game context
+    GameContext context;
 
 public:
     // Constructor
