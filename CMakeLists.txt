@@ -12,6 +12,16 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
+FetchContent_Declare(
+    EnTT
+    GIT_REPOSITORY https://github.com/skypjack/entt.git
+    GIT_TAG v3.12.2  # or latest stable release
+    GIT_SHALLOW ON
+    SYSTEM
+)
+FetchContent_MakeAvailable(EnTT)
+
+
 
 add_executable(main
     src/main.cpp
@@ -29,3 +39,4 @@ add_executable(main
 
 target_compile_features(main PRIVATE cxx_std_17)
 target_link_libraries(main PRIVATE SFML::Graphics)
+target_link_libraries(main PRIVATE SFML::Graphics EnTT::EnTT)
