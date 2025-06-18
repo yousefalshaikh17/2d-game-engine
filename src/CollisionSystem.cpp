@@ -1,56 +1,72 @@
 #include "CollisionSystem.h"
-#include "Components/BoxColliderComponent.h"
+#include "GameContext.h"
+#include <iostream>
 
 bool CollisionSystem::visualizeColliders = false;
 
-void CollisionSystem::registerCollider(BoxColliderComponent* collider) {
-    colliders.push_back(collider);
+CollisionSystem::CollisionSystem(GameContext& context) : context(context)
+{
+
 }
 
-void CollisionSystem::unregisterCollider(BoxColliderComponent* collider) {
-    colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
-}
-
-void CollisionSystem::update() {
-    for (size_t i = 0; i < colliders.size(); i++) {
-        for (size_t j = i + 1; j < colliders.size(); j++) {
-            BoxColliderComponent* a = colliders[i];
-            BoxColliderComponent* b = colliders[j];
-            if (a->getBounds().findIntersection(b->getBounds())) { // Check needs to be added later for game objects with multiple types of colliders
-                a->getGameObject()->onCollide(*b);
-                b->getGameObject()->onCollide(*a);
+void CollisionSystem::update(entt::registry& registry) {
+    auto view = registry.view<BoxColliderComponent, TransformComponent>();
+    for (auto itA = view.begin(); itA != view.end(); ++itA) {
+        entt::entity entityA = *itA;
+        auto& colliderA = view.get<BoxColliderComponent>(entityA);
+        auto& transformA = view.get<TransformComponent>(entityA);
+        colliderA.updateTransform(transformA);
 
 
-                if (!a->isTrigger && !b->isTrigger) {
-                    resolveCollision(a, b);
+        for (auto itB = std::next(itA); itB != view.end(); ++itB) {
+            entt::entity entityB = *itB;
+            auto& colliderB = view.get<BoxColliderComponent>(entityB);
+            auto& transformB = view.get<TransformComponent>(entityB);
+            colliderB.updateTransform(transformB);
+
+            if (colliderA.getBounds().findIntersection(colliderB.getBounds())) { // Check needs to be added later for game objects with multiple types of colliders
+
+                // @TODO: This can be optimized by having a cache. Same apply to collider and transform.
+                std::vector<ScriptComponent*> scriptsA = context.getScriptManager().getGameObjectScripts(*colliderA.gameObject);
+                for (ScriptComponent* script : scriptsA) {
+                    script->onCollide(colliderB);
+                }
+
+                std::vector<ScriptComponent*> scriptsB = context.getScriptManager().getGameObjectScripts(*colliderB.gameObject);
+                for (ScriptComponent* script : scriptsB) {
+                    script->onCollide(colliderA);
+                }
+
+                
+                if (!colliderA.isTrigger && !colliderB.isTrigger) {
+                    resolveCollision(colliderB, transformB, colliderA, transformA); // Fix collision order.
                 }
             }
         }
     }
 }
 
-void CollisionSystem::resolveCollision(BoxColliderComponent* a, BoxColliderComponent* b) {
-    TransformComponent* ta = a->getGameObject()->transform;
-    TransformComponent* tb = b->getGameObject()->transform;
+void CollisionSystem::resolveCollision(BoxColliderComponent& a, TransformComponent& ta,
+                                       BoxColliderComponent& b, TransformComponent& tb) {
 
     BoxColliderComponent* mover = nullptr;
     TransformComponent* moverTransform = nullptr;
 
-    if (ta->hasMoved() && !tb->hasMoved()) {
-        mover = a;
-        moverTransform = ta;
+    if (ta.hasMoved() && !tb.hasMoved()) {
+        mover = &a;
+        moverTransform = &ta;
     }
-    else if (tb->hasMoved() && !ta->hasMoved()) {
-        mover = b;
-        moverTransform = tb;
+    else if (tb.hasMoved() && !ta.hasMoved()) {
+        mover = &b;
+        moverTransform = &tb;
     }
     else {
-        mover = a;
-        moverTransform = ta;
+        mover = &a;
+        moverTransform = &ta;
     }
 
-    sf::FloatRect rectA = a->getBounds();
-    sf::FloatRect rectB = b->getBounds();
+    sf::FloatRect rectA = a.getBounds();
+    sf::FloatRect rectB = b.getBounds();
 
     auto optIntersection = rectA.findIntersection(rectB);
     if (!optIntersection) return;

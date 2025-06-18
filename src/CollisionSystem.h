@@ -1,17 +1,22 @@
 #pragma once
+#include "Components.h"
+#include <entt/entt.hpp>
 #include <vector>
 #include <algorithm>
 
 class BoxColliderComponent;
+class GameContext;
 
 class CollisionSystem {
 public:
     static bool visualizeColliders;
 
-    void registerCollider(BoxColliderComponent* collider);
-    void unregisterCollider(BoxColliderComponent* collider);
-    void update();
-    void resolveCollision(BoxColliderComponent* a, BoxColliderComponent* b);
+    CollisionSystem(GameContext& context);
+
+    void update(entt::registry& registry);
+    void resolveCollision(BoxColliderComponent& a, TransformComponent& ta,
+                          BoxColliderComponent& b, TransformComponent& tb);
+
 private:
-    std::vector<BoxColliderComponent*> colliders;
+    GameContext& context;
 };
