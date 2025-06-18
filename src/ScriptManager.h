@@ -2,6 +2,7 @@
 #include "Components.h"
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 
 class ScriptManager {
 private:
