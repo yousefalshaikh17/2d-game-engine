@@ -18,14 +18,21 @@ public:
     // Component handling
     template<typename T>
     T& addComponent() {
-        //static_assert(std::is_base_of<BaseComponent, T>::value, "T must be derived from Component");
-        
+        static_assert(std::is_base_of<BaseComponent, T>::value, "T must be derived from BaseComponent");
+
         if (hasComponent<T>()) {
             std::cerr << "Warning: Component of type " << typeid(T).name() << " already exists. Returning existing component." << std::endl;
             return getComponent<T>();
         }
 
-        return context.getComponentRegistry().emplace<T>(entityHandle);
+        T& comp = context.getComponentRegistry().emplace<T>(entityHandle);
+        comp.setOwner(this);
+
+        if constexpr (std::is_base_of_v<ScriptComponent, T>) {
+            context.getScriptManager().registerScript(&comp);
+        }
+
+        return comp;
     }
 
     template<typename T>

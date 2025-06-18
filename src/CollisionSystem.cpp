@@ -1,29 +1,45 @@
 #include "CollisionSystem.h"
+#include "GameContext.h"
 #include <iostream>
 
 bool CollisionSystem::visualizeColliders = false;
+
+CollisionSystem::CollisionSystem(GameContext& context) : context(context)
+{
+
+}
 
 void CollisionSystem::update(entt::registry& registry) {
     auto view = registry.view<BoxColliderComponent, TransformComponent>();
     for (auto itA = view.begin(); itA != view.end(); ++itA) {
         entt::entity entityA = *itA;
-        auto& collider0 = view.get<BoxColliderComponent>(entityA);
-        auto& transform0 = view.get<TransformComponent>(entityA);
-        collider0.updateTransform(transform0);
+        auto& colliderA = view.get<BoxColliderComponent>(entityA);
+        auto& transformA = view.get<TransformComponent>(entityA);
+        colliderA.updateTransform(transformA);
 
 
         for (auto itB = std::next(itA); itB != view.end(); ++itB) {
             entt::entity entityB = *itB;
-            auto& collider1 = view.get<BoxColliderComponent>(entityB);
-            auto& transform1 = view.get<TransformComponent>(entityB);
-            collider1.updateTransform(transform1);
+            auto& colliderB = view.get<BoxColliderComponent>(entityB);
+            auto& transformB = view.get<TransformComponent>(entityB);
+            colliderB.updateTransform(transformB);
 
-            if (collider0.getBounds().findIntersection(collider1.getBounds())) { // Check needs to be added later for game objects with multiple types of colliders
-                /*a->getGameObject()->onCollide(*b);
-                b->getGameObject()->onCollide(*a);*/
+            if (colliderA.getBounds().findIntersection(colliderB.getBounds())) { // Check needs to be added later for game objects with multiple types of colliders
+
+                // @TODO: This can be optimized by having a cache. Same apply to collider and transform.
+                std::vector<ScriptComponent*> scriptsA = context.getScriptManager().getGameObjectScripts(*colliderA.gameObject);
+                for (ScriptComponent* script : scriptsA) {
+                    script->onCollide(colliderB);
+                }
+
+                std::vector<ScriptComponent*> scriptsB = context.getScriptManager().getGameObjectScripts(*colliderB.gameObject);
+                for (ScriptComponent* script : scriptsB) {
+                    script->onCollide(colliderA);
+                }
+
                 
-                if (!collider0.isTrigger && !collider1.isTrigger) {
-                    resolveCollision(collider1, transform1, collider0, transform0); // Fix collision order.
+                if (!colliderA.isTrigger && !colliderB.isTrigger) {
+                    resolveCollision(colliderB, transformB, colliderA, transformA); // Fix collision order.
                 }
             }
         }

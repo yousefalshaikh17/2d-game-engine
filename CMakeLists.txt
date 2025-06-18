@@ -29,8 +29,11 @@ add_executable(main
     src/CollisionSystem.cpp
     src/GameContext.cpp
     src/GameObject.cpp
-    src/GameObjects/Player.cpp
-    src/DrawableEntity.cpp    
+    src/DrawableEntity.cpp
+    src/ScriptManager.h
+    src/ScriptManager.cpp
+    src/Scripts/PlayerController.cpp
+    src/Components.cpp
 )
 
 target_compile_features(main PRIVATE cxx_std_17)

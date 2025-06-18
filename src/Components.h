@@ -3,7 +3,23 @@
 #include <SFML/Graphics.hpp>
 #include "DrawableEntity.h"
 
-struct TransformComponent
+class GameObject;
+struct TransformComponent;
+
+struct BaseComponent
+{
+public:
+    GameObject* gameObject;
+    TransformComponent* transform;
+
+    BaseComponent() = default;
+
+    friend class GameObject;
+protected:
+    void setOwner(GameObject* gameObject);
+};
+
+struct TransformComponent : BaseComponent
 {
 private:
 
@@ -20,11 +36,11 @@ public:
     TransformComponent(const TransformComponent&) = default;
 
     bool hasMoved() const {
-        return position != previousPosition; // || rotation != previousRotation || scale != previousScale;
+        return position != previousPosition || rotation != previousRotation || scale != previousScale;
     }
 };
 
-struct RenderComponent
+struct RenderComponent : BaseComponent
 {
     DrawableEntity* drawableEntity = nullptr;
 
@@ -33,7 +49,7 @@ struct RenderComponent
     ~RenderComponent() { delete drawableEntity; drawableEntity = nullptr; };
 };
 
-struct BoxColliderComponent
+struct BoxColliderComponent : BaseComponent
 {
 private:
     sf::RectangleShape shape;
@@ -57,4 +73,12 @@ public:
         shape.setRotation(sf::degrees(transform.rotation));
         shape.setSize(transform.scale);
     }
+};
+
+struct ScriptComponent : BaseComponent
+{
+    virtual void start() {};
+    virtual void update(float deltaTime) {};
+    virtual void fixedUpdate(float deltaTime) {};
+    virtual void onCollide(BoxColliderComponent& other) {};
 };

@@ -2,20 +2,40 @@
 
 Game::Game() {
     initWindow();
-    player = new Player(context);
-    objects.push_back(player);
 
-    GameObject* obstacle = new GameObject(context);
-    sf::RectangleShape* box = new sf::RectangleShape(sf::Vector2f(1, 1));
-    box->setFillColor(sf::Color::Red);
-    RenderComponent& render = obstacle->addComponent<RenderComponent>();
-    render.drawableEntity = new DrawableEntity(box);
-    TransformComponent& transform = obstacle->transform;
-    transform.scale = sf::Vector2(100.0f, 100.0f);
-    transform.position = sf::Vector2f(150, 150);
-    BoxColliderComponent collider = obstacle->addComponent<BoxColliderComponent>();
+    // Set up player
+    {
+        GameObject* player = new GameObject(context);
 
-    objects.push_back(obstacle);
+        sf::CircleShape* circle = new sf::CircleShape(0.5);
+        circle->setFillColor(sf::Color::Green);
+        player->transform.scale = sf::Vector2(100.0f, 100.0f);
+
+        RenderComponent& render = player->addComponent<RenderComponent>();
+        render.drawableEntity = new DrawableEntity(circle);
+        BoxColliderComponent& collider = player->addComponent<BoxColliderComponent>();
+
+        // Add control script
+        player->addComponent<PlayerController>();
+
+        objects.push_back(player);
+    }
+
+    // Set up obstacle
+    {
+        GameObject* obstacle = new GameObject(context);
+
+        sf::RectangleShape* box = new sf::RectangleShape(sf::Vector2f(1, 1));
+        box->setFillColor(sf::Color::Red);
+        RenderComponent& render = obstacle->addComponent<RenderComponent>();
+        render.drawableEntity = new DrawableEntity(box);
+        TransformComponent& transform = obstacle->transform;
+        transform.scale = sf::Vector2(100.0f, 100.0f);
+        transform.position = sf::Vector2f(150, 150);
+        BoxColliderComponent collider = obstacle->addComponent<BoxColliderComponent>();
+
+        objects.push_back(obstacle);
+    }
 }
 
 Game::~Game() {
@@ -48,13 +68,18 @@ void Game::fixedUpdate(float deltaTime) {
         transform.previousScale = transform.scale;
     }
 
-    player->fixedUpdate(deltaTime);
+    context.getScriptManager().fixedUpdate(deltaTime);
+
     // TODO refactor collision system
     context.getCollisionSystem().update(context.getComponentRegistry());
 }
 
 void Game::preRender(float alpha) {
     
+}
+
+void Game::update(float deltaTime) {
+    context.getScriptManager().update(deltaTime);
 }
 
 
@@ -100,6 +125,8 @@ void Game::gameLoop() {
     float frameTime;
     float alpha;
 
+    context.getScriptManager().start();
+
     while (window.isOpen()) {
         frameTime = clock.restart().asSeconds();
         accumulator += frameTime;
@@ -114,6 +141,7 @@ void Game::gameLoop() {
         alpha = accumulator / dt;
 
         preRender(alpha);
+        update(frameTime);
         render();
     }
 }
