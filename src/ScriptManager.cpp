@@ -15,6 +15,7 @@ void ScriptManager::unregisterScript(ScriptComponent* script)
 	if (scripts.empty()) {
 		scriptMap.erase(script->gameObject);
 	}
+	script->onDestroy();
 }
 
 void ScriptManager::start()

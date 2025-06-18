@@ -82,4 +82,5 @@ struct ScriptComponent : BaseComponent
     virtual void update(float deltaTime) {};
     virtual void fixedUpdate(float deltaTime) {};
     virtual void onCollide(BoxColliderComponent& other) {};
+    virtual void onDestroy() {};
 };
