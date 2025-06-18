@@ -16,5 +16,5 @@ public:
     void update(float deltaTime);
     void fixedUpdate(float deltaTime);
 
-    const std::vector<ScriptComponent*>& ScriptManager::getGameObjectScripts(GameObject& object);
+    const std::vector<ScriptComponent*>& getGameObjectScripts(GameObject& object);
 };
