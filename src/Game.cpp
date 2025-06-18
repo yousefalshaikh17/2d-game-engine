@@ -32,7 +32,7 @@ Game::Game() {
         TransformComponent& transform = obstacle->transform;
         transform.scale = sf::Vector2(100.0f, 100.0f);
         transform.position = sf::Vector2f(150, 150);
-        BoxColliderComponent collider = obstacle->addComponent<BoxColliderComponent>();
+        BoxColliderComponent& collider = obstacle->addComponent<BoxColliderComponent>();
 
         objects.push_back(obstacle);
     }

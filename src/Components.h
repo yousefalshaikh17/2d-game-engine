@@ -13,6 +13,8 @@ public:
     TransformComponent* transform;
 
     BaseComponent() = default;
+    BaseComponent(const BaseComponent&) = delete;
+    BaseComponent(BaseComponent&&) = delete;
 
     friend class GameObject;
 protected:
@@ -46,7 +48,6 @@ struct RenderComponent : BaseComponent
 
     RenderComponent() = default;
     RenderComponent(const RenderComponent&) = default;
-    ~RenderComponent() { delete drawableEntity; drawableEntity = nullptr; };
 };
 
 struct BoxColliderComponent : BaseComponent
