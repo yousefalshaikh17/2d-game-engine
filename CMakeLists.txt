@@ -30,11 +30,7 @@ add_executable(main
     src/GameContext.cpp
     src/GameObject.cpp
     src/GameObjects/Player.cpp
-    src/Components/TransformComponent.cpp
-    src/Components/RenderComponent.cpp
-    src/DrawableEntity.cpp
-    src/Components/BoxColliderComponent.cpp
-    src/GameObjects/Obstacle.cpp
+    src/DrawableEntity.cpp    
 )
 
 target_compile_features(main PRIVATE cxx_std_17)

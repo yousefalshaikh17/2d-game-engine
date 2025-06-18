@@ -4,9 +4,11 @@
 #include <optional>
 #include "GameObject.h"
 #include "GameObjects/Player.h"
-#include "GameObjects/Obstacle.h"
 #include "CollisionSystem.h"
 #include "GameContext.h"
+#include <iostream>
+#include <atomic>
+#include "Components.h"
 
 class Game {
 private:
@@ -19,6 +21,8 @@ private:
 
     // Game context
     GameContext context;
+
+    Player* player;
 
 public:
     // Constructor

@@ -1,14 +1,20 @@
 #include "Game.h"
 
-#include <iostream>
-#include <atomic>
-
 Game::Game() {
     initWindow();
-    Player* player = new Player(context);
+    player = new Player(context);
     objects.push_back(player);
 
-    Obstacle* obstacle = new Obstacle(context);
+    GameObject* obstacle = new GameObject(context);
+    sf::RectangleShape* box = new sf::RectangleShape(sf::Vector2f(1, 1));
+    box->setFillColor(sf::Color::Red);
+    RenderComponent& render = obstacle->addComponent<RenderComponent>();
+    render.drawableEntity = new DrawableEntity(box);
+    TransformComponent& transform = obstacle->transform;
+    transform.scale = sf::Vector2(100.0f, 100.0f);
+    transform.position = sf::Vector2f(150, 150);
+    BoxColliderComponent collider = obstacle->addComponent<BoxColliderComponent>();
+
     objects.push_back(obstacle);
 }
 
@@ -34,15 +40,21 @@ void Game::handleEvents() {
 }
 
 void Game::fixedUpdate(float deltaTime) {
-    for (GameObject* object : objects)
-        object->fixedUpdate(deltaTime);
+    auto view = context.getComponentRegistry().view<TransformComponent>();
+    for (auto entity : view) {
+        auto& transform = view.get<TransformComponent>(entity);
+        transform.previousPosition = transform.position;
+        transform.previousRotation = transform.rotation;
+        transform.previousScale = transform.scale;
+    }
 
-    context.getCollisionSystem().update();
+    player->fixedUpdate(deltaTime);
+    // TODO refactor collision system
+    context.getCollisionSystem().update(context.getComponentRegistry());
 }
 
 void Game::preRender(float alpha) {
-    for (GameObject* object : objects)
-        object->preRender(alpha);
+    
 }
 
 
@@ -50,8 +62,31 @@ void Game::render() {
     // The window is like a canvas
     window.clear();
     
-    for (GameObject* object : objects)
-        object->render(window);
+    auto view = context.getComponentRegistry().view<RenderComponent, TransformComponent>();
+    for (auto entity : view) {
+        auto [transform, renderComponent] = view.get<TransformComponent, RenderComponent>(entity);
+
+        DrawableEntity* drawableEntity = renderComponent.drawableEntity;
+
+        if (drawableEntity == nullptr)
+            continue;
+
+        drawableEntity->setPosition(transform.position);
+        drawableEntity->setRotation(sf::degrees(transform.rotation));
+        drawableEntity->setScale(transform.scale);
+
+        window.draw(*drawableEntity);
+    }
+
+    if (context.getCollisionSystem().visualizeColliders)
+    {
+        // @TODO: Render collider visualization
+        auto view = context.getComponentRegistry().view<BoxColliderComponent>();
+        for (auto entity : view) {
+            BoxColliderComponent& collider = view.get<BoxColliderComponent>(entity);
+            window.draw(collider.shape);
+        }
+    }
 
     // Display backbuffer
     window.display();
