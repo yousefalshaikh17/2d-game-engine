@@ -35,7 +35,6 @@ public:
     sf::Vector2f previousScale = { 1.f, 1.f };
 
     TransformComponent() = default;
-    TransformComponent(const TransformComponent&) = default;
 
     bool hasMoved() const {
         return position != previousPosition || rotation != previousRotation || scale != previousScale;
@@ -47,7 +46,6 @@ struct RenderComponent : BaseComponent
     DrawableEntity* drawableEntity = nullptr;
 
     RenderComponent() = default;
-    RenderComponent(const RenderComponent&) = default;
 };
 
 struct BoxColliderComponent : BaseComponent
@@ -63,7 +61,6 @@ public:
         shape.setFillColor(sf::Color::Transparent);
         shape.setOutlineThickness(1);
     };
-    BoxColliderComponent(const BoxColliderComponent&) = default;
 
     sf::FloatRect getBounds() {
         return shape.getGlobalBounds();
